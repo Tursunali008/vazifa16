@@ -1,41 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vazifa16/providers/cart_proveder.dart';
-import 'package:vazifa16/providers/order_provider.dart';
 import 'package:vazifa16/providers/product_provider.dart';
-import 'package:vazifa16/views/screens/cart_screen.dart';
-import 'package:vazifa16/views/screens/order_screen.dart';
 import 'package:vazifa16/views/screens/product_screen.dart';
+import 'package:vazifa16/views/widgets/styles.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MainApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ProductsProvider()),
-        ChangeNotifierProvider(create: (_) => CartProvider()),
-        ChangeNotifierProvider(create: (_) => OrdersProvider()),
+        ChangeNotifierProvider(create: (ctx) {
+          return ProductsController();
+        }),
+        ChangeNotifierProvider(create: (ctx) {
+          return CartProveder();
+        }),
       ],
-      child: MaterialApp(
-        title: 'Online Store',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          hintColor: Colors.orange,
-          fontFamily: 'Lato',
-        ),
-        home: ProductScreen(),
-        debugShowCheckedModeBanner: false,
-        routes: {
-          CartScreen.routeName: (ctx) => CartScreen(),
-          OrdersScreen.routeName: (ctx) => OrdersScreen(),
-        },
-      ),
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          home: ProductsScreen(),
+        );
+      },
     );
   }
 }

@@ -1,13 +1,9 @@
 class Cart {
-  final String id;
-  final String title;
-  int quantity;
-  int price;
+  Map<String, dynamic> products;
+  double totalPrice;
 
   Cart({
-    required this.id,
-    required this.title,
-    required this.quantity,
-    required this.price,
+    required this.products,
+    required this.totalPrice,
   });
 }

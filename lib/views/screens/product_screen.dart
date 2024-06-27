@@ -1,39 +1,56 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vazifa16/model/product.dart';
 import 'package:vazifa16/providers/product_provider.dart';
-import 'package:vazifa16/views/widgets/custom_drower.dart';
+import 'package:vazifa16/views/screens/cart_screen.dart';
 import 'package:vazifa16/views/widgets/product_item.dart';
-import './cart_screen.dart';
 
-class ProductScreen extends StatelessWidget {
+import '../widgets/add_product.dart';
+
+class ProductsScreen extends StatelessWidget {
+  const ProductsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final productsProvider = Provider.of<ProductsProvider>(context);
-    final products = productsProvider.items;
-
+    ProductsController productsController =
+        Provider.of<ProductsController>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Online Store'),
+        title: const Text('Mahsulotlar'),
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart),
             onPressed: () {
-              Navigator.of(context).pushNamed(CartScreen.routeName);
+              showDialog(
+                context: context,
+                builder: (context) => const AddProductAlertDialog(isAdd: true),
+              );
             },
+            icon: const Icon(Icons.add_circle),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              onPressed: () => Navigator.push(
+                context,
+                CupertinoPageRoute(builder: (context) => const CartScreen()),
+              ),
+              icon: const Icon(Icons.shopping_cart),
+            ),
           ),
         ],
       ),
-      drawer: AppDrawer(),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(10.0),
-        itemCount: products.length,
-        itemBuilder: (ctx, i) => ProductItem(products[i]),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 3 / 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
+      body: ListView.builder(
+        itemCount: productsController.list.length,
+        itemBuilder: (ctx, index) {
+          final product = productsController.list[index];
+          return ChangeNotifierProvider<Product>.value(
+            value: product,
+            builder: (context, child) {
+              return ProductItem();
+            },
+          );
+        },
       ),
     );
   }
