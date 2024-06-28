@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vazifa16/providers/cart_proveder.dart';
-import 'package:vazifa16/views/screens/chec_out_screen.dart';
-import 'package:vazifa16/views/widgets/cart_item.dart';
+import 'package:vazifa16/views/screens/payment_success_screen.dart';
 
-class CartScreen extends StatelessWidget {
-  static const routeName = '/cart';
+class CheckoutScreen extends StatelessWidget {
+  static const routeName = '/checkout';
 
   @override
   Widget build(BuildContext context) {
@@ -13,16 +12,17 @@ class CartScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Cart'),
+        title: const Text('Checkout'),
       ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
               itemCount: cart.items.length,
-              itemBuilder: (ctx, i) => CartItemWidget(
-                cart.items.values.toList()[i],
-                cart.items.keys.toList()[i],
+              itemBuilder: (ctx, i) => ListTile(
+                title: Text(cart.items.values.toList()[i].title),
+                subtitle: Text('Quantity: ${cart.items.values.toList()[i].quantity}'),
+                trailing: Text('\$${cart.items.values.toList()[i].price}'),
               ),
             ),
           ),
@@ -30,6 +30,10 @@ class CartScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
+                const TextField(
+                  decoration: InputDecoration(labelText: 'Discount Code'),
+                ),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -40,7 +44,6 @@ class CartScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Spacer(),
                     Chip(
                       label: Text(
                         '\$${cart.totalAmount.toStringAsFixed(2)}',
@@ -48,13 +51,15 @@ class CartScreen extends StatelessWidget {
                       ),
                       backgroundColor: Theme.of(context).primaryColor,
                     ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(CheckoutScreen.routeName);
-                      },
-                      child: const Text('CHECKOUT NOW'),
-                    )
                   ],
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    cart.clear();
+                    Navigator.of(context).pushReplacementNamed(PaymentSuccessScreen.routeName);
+                  },
+                  child: const Text('BUY NOW'),
                 ),
               ],
             ),

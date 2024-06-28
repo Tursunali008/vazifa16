@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 
-class Product extends ChangeNotifier {
-  String id;
-  String title;
-  Color color;
-  int price;
+class Product with ChangeNotifier {
+  final String id;
+  final String title;
+  final String description;
+  final double price;
+  final String imageUrl;
+  final String category;
 
   Product({
     required this.id,
     required this.title,
-    required this.color,
+    required this.description,
     required this.price,
+    required this.imageUrl,
+    required this.category,
   });
-
-  
-
-  void updateProduct(String newText, int newPrice) {
-    title = newText;
-    price = newPrice;
-    notifyListeners();
-  }
 }

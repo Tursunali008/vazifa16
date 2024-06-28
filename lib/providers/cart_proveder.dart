@@ -1,57 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:vazifa16/model/cart.dart';
-import 'package:vazifa16/model/product.dart';
 
-class CartProveder extends ChangeNotifier {
-  final Cart _cart = Cart(
-    products: {},
-    totalPrice: 0,
-  );
+class CartProvider with ChangeNotifier {
+  Map<String, CartItem> _items = {};
 
-  Cart get cart {
-    return _cart;
+  Map<String, CartItem> get items {
+    return {..._items};
   }
 
-  void addToCart(Product product) {
-    if (_cart.products.containsKey(product.id)) {
-      _cart.products[product.id]["amount"]++;
+  int get itemCount {
+    return _items.length;
+  }
+
+  double get totalAmount {
+    double total = 0.0;
+    _items.forEach((key, cartItem) {
+      total += cartItem.price * cartItem.quantity;
+    });
+    return total;
+  }
+
+  void addItem(String productId, double price, String title) {
+    if (_items.containsKey(productId)) {
+      _items.update(
+        productId,
+        (existingCartItem) => CartItem(
+          id: existingCartItem.id,
+          title: existingCartItem.title,
+          quantity: existingCartItem.quantity + 1,
+          price: existingCartItem.price,
+        ),
+      );
     } else {
-      _cart.products[product.id] = {
-        "product": product,
-        "amount": 1,
-      };
+      _items.putIfAbsent(
+        productId,
+        () => CartItem(
+          id: DateTime.now().toString(),
+          title: title,
+          quantity: 1,
+          price: price,
+        ),
+      );
     }
-    calculateTotal();
     notifyListeners();
   }
 
-  void removeFromCart(String productId) {
-    if (_cart.products.containsKey(productId)) {
-      if (_cart.products[productId]["amount"] == 1) {
-        _cart.products.removeWhere((key, value) {
-          return key == productId;
-        });
-      } else {
-        _cart.products[productId]["amount"]--;
-      }
-      calculateTotal();
-      notifyListeners();
-    }
+  void removeItem(String productId) {
+    _items.remove(productId);
+    notifyListeners();
   }
 
-  void calculateTotal() {
-    double total = 0;
-    _cart.products.forEach((key, value) {
-      total += value['product'].price * value['amount'];
-    });
-    _cart.totalPrice = total;
-  }
-
-  bool isInCart(String productId) {
-    return _cart.products.containsKey(productId);
-  }
-
-  int getProductAmount(String productId) {
-    return _cart.products[productId]['amount'];
+  void clear() {
+    _items = {};
+    notifyListeners();
   }
 }
