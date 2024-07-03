@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 
-class Product with ChangeNotifier {
-  final String id;
-  final String title;
-  final String description;
-  final double price;
-  final String imageUrl;
-  final String category;
+class ProductModel extends ChangeNotifier {
+  String id;
+  String title;
+  String description;
+  double rating;
+  double price;
+  String firstColorImage;
+  String productInfo;
+  bool isLiked;
 
-  Product({
+  ProductModel({
     required this.id,
     required this.title,
     required this.description,
+    required this.productInfo,
+    required this.rating,
     required this.price,
-    required this.imageUrl,
-    required this.category,
+    required this.firstColorImage,
+    required this.isLiked,
   });
 }
